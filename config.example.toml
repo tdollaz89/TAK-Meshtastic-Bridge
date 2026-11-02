@@ -1,0 +1,50 @@
+# tak-mesh-bridge configuration
+# Installed to /etc/tak-mesh-bridge/config.toml
+
+[mesh]
+# Serial device of the RAK4630. Usually /dev/ttyACM0. Leave "" to auto-detect.
+port = "/dev/ttyACM0"
+# Channel the ATAK plugin users are on (0 = primary).
+channel_index = 0
+
+# --- LoRa airtime protection (TAK -> mesh direction) ---
+# Minimum seconds between ANY two transmissions from the bridge.
+tx_min_gap_s = 4.0
+# A TAK user's position is sent to the mesh at most this often...
+pli_min_interval_s = 120
+# ...and at least this often while they keep reporting, even if stationary.
+pli_max_interval_s = 600
+# Between those two, only resend if they moved at least this many meters.
+pli_min_move_m = 50
+
+# Log raw packets on other ports (useful for debugging / adding markers later).
+log_unknown_ports = false
+
+[tak]
+host = "127.0.0.1"
+port = 8089
+tls = true
+# Client cert made on the TAK Server with:  ./makeCert.sh client tak-bridge
+cert_file = "/etc/tak-mesh-bridge/certs/tak-bridge.pem"
+key_file = "/etc/tak-mesh-bridge/certs/tak-bridge.key"
+key_password = "atakatak"
+ca_file = "/etc/tak-mesh-bridge/certs/ca.pem"
+verify_server = true
+
+[bridge]
+# How long a mesh user's icon stays fresh on TAK after their last position.
+mesh_stale_s = 900
+# Close a mesh user's TAK connection after this long without hearing them.
+proxy_idle_timeout_s = 1800
+max_proxies = 32
+# A user heard directly on both TAK and the mesh within this window is not bridged.
+dual_homed_window_s = 600
+log_level = "INFO"
+
+# Show standalone Meshtastic radios (no ATAK phone) on TAK using their own GPS.
+# Radios that carry ATAK plugin traffic are skipped so their users don't appear twice.
+node_positions = true
+# CoT type for those radios. a-f-G-E-S = friendly ground sensor; a-f-G-U-C = friendly unit.
+node_cot_type = "a-f-G-E-S"
+# Radios report position every 15 min by default, so keep them fresh longer.
+node_stale_s = 2700

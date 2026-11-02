@@ -1,0 +1,17 @@
+[Unit]
+Description=TAK Server <-> Meshtastic LoRa bridge
+After=network-online.target takserver.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=takbridge
+Group=takbridge
+SupplementaryGroups=dialout
+ExecStart=/opt/tak-mesh-bridge/venv/bin/python /opt/tak-mesh-bridge/tak_mesh_bridge.py -c /etc/tak-mesh-bridge/config.toml
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
