@@ -1,0 +1,11 @@
+# Your real config may contain channel keys (PSK) and server addresses; the example stays tracked
+config.toml
+
+# Python leftovers
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+.DS_Store
